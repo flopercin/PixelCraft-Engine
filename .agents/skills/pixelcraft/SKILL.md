@@ -54,6 +54,7 @@ from pixelcraft import (
     save_png,           # save_png(canvas, "output/name.png", scale=1, preview_scale=8)
     save_gif,           # save_gif(anim, "output/name.gif", preview_scale=8)
     save_spritesheet,   # save_spritesheet(anim, "output/name.png", save_meta_json=True)
+    export_gallery,     # export_gallery("output") -> interactive showcase HTML
     lint_sprite,        # lint_sprite(canvas).summary() -> check orphan pixels/symmetry
 )
 
@@ -144,4 +145,5 @@ When user asks to create a sprite:
 1. Write `output/generate_<name>.py` using **Procedural Geometric Primitives**.
 2. Run `python output/generate_<name>.py`.
 3. Inspect `output/<name>_preview.png` via `view_file` to confirm visual quality.
-4. Present the result to the user with a markdown link to the image. Done!
+4. Refresh interactive showcase gallery: `export_gallery('output')` (or `python -m pixelcraft gallery output`).
+5. Present the result to the user with a markdown link to the image and `gallery.html`. Done!

@@ -13,6 +13,7 @@ from .renderer import (
     save_spritesheet,
     export_godot_spriteframes,
     export_html_preview,
+    export_gallery,
 )
 from .linter import lint_sprite, LintReport
 
@@ -35,6 +36,7 @@ __all__ = [
     "save_spritesheet",
     "export_godot_spriteframes",
     "export_html_preview",
+    "export_gallery",
     "lint_sprite",
     "LintReport",
 ]

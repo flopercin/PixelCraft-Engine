@@ -454,3 +454,323 @@ animations = [{
         f.write(f'  "frames": [],\n  "loop": true,\n  "name": &"{animations[0].name}",\n  "speed": 8.0\n}}]\n')
 
     return tres_path
+
+
+def export_gallery(
+    target_dir: Union[str, Path] = "output",
+    output_html_path: Optional[Union[str, Path]] = None,
+    title: str = "PixelCraft Sprite Showcase",
+) -> Path:
+    """
+    Scans a directory for generated sprite assets (.png, .gif) and generates an interactive HTML showcase gallery.
+    Features:
+    - Interactive zoom selector (1x, 2x, 4x, 6x, 8x, 12x)
+    - Background switcher (checkerboard, dark, light, green)
+    - Search / filter input
+    - Responsive grid displaying dimensions and filenames
+    - Pure client-side HTML/CSS/JS with zero external dependencies
+    """
+    directory = Path(target_dir)
+    if not output_html_path:
+        out_path = directory / "gallery.html"
+    else:
+        out_path = Path(output_html_path)
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    candidates = []
+    for ext in ("*.png", "*.gif"):
+        for f in directory.rglob(ext):
+            if f.name.endswith("_preview.png") or f.name.endswith("_preview.gif"):
+                continue
+            if f.resolve() == out_path.resolve():
+                continue
+            candidates.append(f)
+
+    candidates = sorted(set(candidates), key=lambda x: str(x).lower())
+
+    cards_html = []
+    for img_path in candidates:
+        try:
+            rel_src = img_path.relative_to(out_path.parent).as_posix()
+        except ValueError:
+            rel_src = img_path.as_posix()
+
+        name = img_path.name
+        is_gif = img_path.suffix.lower() == ".gif"
+        badge = "ANIMATED GIF" if is_gif else "PNG SPRITE"
+        badge_color = "#f48c06" if is_gif else "#4895ef"
+
+        dim_str = ""
+        try:
+            with Image.open(img_path) as im:
+                dim_str = f"{im.width}x{im.height}px"
+        except Exception:
+            dim_str = ""
+
+        pill_text = f"{dim_str} &bull; {badge}" if dim_str else badge
+
+        card = f"""      <div class="card" data-name="{name.lower()}">
+        <div class="card-header">
+          <span class="card-title" title="{name}">{name}</span>
+          <span class="badge" style="color: {badge_color}; border-color: {badge_color}44; background: {badge_color}18;">{pill_text}</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="{rel_src}" alt="{name}" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>{rel_src}</code>
+        </div>
+      </div>"""
+        cards_html.append(card)
+
+    cards_block = "\\n".join(cards_html) if cards_html else '<p style="color:#888; text-align:center; padding:40px;">No sprites found in directory.</p>'
+
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{title}</title>
+<style>
+  * {{ box-sizing: border-box; }}
+  body {{
+    margin: 0;
+    padding: 24px 32px;
+    background: #0f111a;
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }}
+  header {{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #1e2235;
+  }}
+  .brand {{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }}
+  .brand h1 {{
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }}
+  .counter {{
+    font-size: 0.85rem;
+    color: #94a3b8;
+    background: #1e2235;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }}
+  .toolbar {{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }}
+  .control-group {{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #181b29;
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid #282d44;
+  }}
+  .control-group label {{
+    font-size: 0.75rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 600;
+  }}
+  button, select, input {{
+    background: #23283c;
+    color: #f1f5f9;
+    border: 1px solid #333a56;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s ease;
+  }}
+  button:hover, select:hover {{
+    background: #2d334d;
+    border-color: #4f587d;
+  }}
+  input[type="text"] {{
+    cursor: text;
+    width: 180px;
+  }}
+  input[type="text"]:focus {{
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 2px #60a5fa33;
+  }}
+  .grid {{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }}
+  .card {{
+    background: #151824;
+    border: 1px solid #23283c;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }}
+  .card:hover {{
+    transform: translateY(-2px);
+    border-color: #3b4363;
+  }}
+  .card-header {{
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    background: #191c2b;
+    border-bottom: 1px solid #23283c;
+  }}
+  .card-title {{
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }}
+  .badge {{
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    flex-shrink: 0;
+  }}
+  .viewport {{
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }}
+  .viewport.checkerboard {{
+    background-color: #1a1c26;
+    background-image:
+      linear-gradient(45deg, #13151f 25%, transparent 25%),
+      linear-gradient(-45deg, #13151f 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #13151f 75%),
+      linear-gradient(-45deg, transparent 75%, #13151f 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+  }}
+  .viewport.dark {{ background: #08080c; }}
+  .viewport.light {{ background: #f1f5f9; }}
+  .viewport.green {{ background: #00ff00; }}
+  .sprite-img {{
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    transform-origin: center;
+    transition: transform 0.1s ease;
+    display: block;
+  }}
+  .card-footer {{
+    padding: 10px 16px;
+    background: #131520;
+    border-top: 1px solid #1e2235;
+    font-size: 0.75rem;
+    color: #64748b;
+  }}
+  .card-footer code {{
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    word-break: break-all;
+  }}
+</style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <h1>{title}</h1>
+      <span class="counter" id="item-count">{len(candidates)} sprites</span>
+    </div>
+    <div class="toolbar">
+      <div class="control-group">
+        <label>Search</label>
+        <input type="text" id="search-box" placeholder="Filter sprites..." oninput="filterSprites()" />
+      </div>
+      <div class="control-group">
+        <label>Zoom</label>
+        <select id="zoom-select" onchange="setZoom(this.value)">
+          <option value="1">1x</option>
+          <option value="2">2x</option>
+          <option value="4" selected>4x</option>
+          <option value="6">6x</option>
+          <option value="8">8x</option>
+          <option value="12">12x</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Background</label>
+        <select onchange="setBackground(this.value)">
+          <option value="checkerboard" selected>Checkerboard</option>
+          <option value="dark">Deep Dark</option>
+          <option value="light">Light</option>
+          <option value="green">Chroma Green</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <div class="grid" id="sprites-grid">
+{cards_block}
+  </div>
+
+<script>
+  let currentZoom = 4;
+  function setZoom(val) {{
+    currentZoom = Number(val);
+    document.querySelectorAll('.sprite-img').forEach(img => {{
+      img.style.transform = `scale(${{currentZoom}})`;
+    }});
+  }}
+  function setBackground(cls) {{
+    document.querySelectorAll('.viewport').forEach(vp => {{
+      vp.className = `viewport ${{cls}}`;
+    }});
+  }}
+  function filterSprites() {{
+    const q = document.getElementById('search-box').value.toLowerCase();
+    let visible = 0;
+    document.querySelectorAll('.card').forEach(card => {{
+      const match = card.getAttribute('data-name').includes(q);
+      card.style.display = match ? 'flex' : 'none';
+      if (match) visible++;
+    }});
+    document.getElementById('item-count').innerText = `${{visible}} sprites`;
+  }}
+  window.addEventListener('DOMContentLoaded', () => {{
+    setZoom(document.getElementById('zoom-select').value);
+  }});
+</script>
+</body>
+</html>
+"""
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(html_content)
+
+    return out_path
+

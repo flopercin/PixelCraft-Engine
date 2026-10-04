@@ -67,12 +67,20 @@ def main():
 
     subparsers.add_parser("palettes", help="List built-in color palettes")
 
+    gallery_parser = subparsers.add_parser("gallery", help="Generate an interactive HTML showcase gallery for sprites")
+    gallery_parser.add_argument("dir", nargs="?", default="output", help="Directory containing sprites (default: output)")
+    gallery_parser.add_argument("-o", "--output", default=None, help="Output HTML file path (default: <dir>/gallery.html)")
+
     args = parser.parse_args()
 
     if args.command == "preview":
         cli_preview_image(args.path, args.max_width)
     elif args.command == "palettes":
         cli_list_palettes()
+    elif args.command == "gallery":
+        from .renderer import export_gallery
+        out = export_gallery(args.dir, args.output)
+        print(f"Gallery generated: {out}")
     else:
         parser.print_help()
 

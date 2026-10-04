@@ -2,146 +2,571 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PixelCraft Sprites Showcase</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PixelCraft Sprite Showcase</title>
 <style>
+  * { box-sizing: border-box; }
   body {
     margin: 0;
-    padding: 30px;
-    background: #141020;
-    color: #e4e6eb;
-    font-family: system-ui, -apple-system, sans-serif;
+    padding: 24px 32px;
+    background: #0f111a;
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+  header {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #1e2235;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand h1 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .counter {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    background: #1e2235;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
     align-items: center;
   }
-  h1 { margin-bottom: 6px; color: #5bc0be; font-size: 1.6rem; }
-  p { margin-top: 0; margin-bottom: 24px; color: #8e9aaf; }
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #181b29;
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid #282d44;
+  }
+  .control-group label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  button, select, input {
+    background: #23283c;
+    color: #f1f5f9;
+    border: 1px solid #333a56;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s ease;
+  }
+  button:hover, select:hover {
+    background: #2d334d;
+    border-color: #4f587d;
+  }
+  input[type="text"] {
+    cursor: text;
+    width: 180px;
+  }
+  input[type="text"]:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 2px #60a5fa33;
+  }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 24px;
-    max-width: 1100px;
-    width: 100%;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
   }
   .card {
-    background: #1d1733;
-    border: 2px solid #2d244c;
+    background: #151824;
+    border: 1px solid #23283c;
     border-radius: 12px;
-    padding: 20px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    transition: transform 0.15s ease, border-color 0.15s ease;
   }
-  .card h3 {
-    margin: 0 0 14px 0;
-    font-size: 1.1rem;
-    color: #ffd166;
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: #3b4363;
+  }
+  .card-header {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    background: #191c2b;
+    border-bottom: 1px solid #23283c;
+  }
+  .card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    flex-shrink: 0;
   }
   .viewport {
-    background-color: #241c38;
-    background-image: linear-gradient(45deg, #1b152d 25%, transparent 25%),
-      linear-gradient(-45deg, #1b152d 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, #1b152d 75%),
-      linear-gradient(-45deg, transparent 75%, #1b152d 75%);
-    background-size: 16px 16px;
-    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
-    padding: 24px;
-    border-radius: 8px;
+    min-height: 200px;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 160px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
   }
-  .pixelated {
+  .viewport.checkerboard {
+    background-color: #1a1c26;
+    background-image:
+      linear-gradient(45deg, #13151f 25%, transparent 25%),
+      linear-gradient(-45deg, #13151f 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #13151f 75%),
+      linear-gradient(-45deg, transparent 75%, #13151f 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+  }
+  .viewport.dark { background: #08080c; }
+  .viewport.light { background: #f1f5f9; }
+  .viewport.green { background: #00ff00; }
+  .sprite-img {
     image-rendering: pixelated;
     image-rendering: crisp-edges;
-    transform: scale(6);
     transform-origin: center;
+    transition: transform 0.1s ease;
+    display: block;
   }
-  .desc {
-    margin-top: 24px;
-    font-size: 0.85rem;
-    color: #a5a5b5;
-    text-align: center;
-    line-height: 1.4;
+  .card-footer {
+    padding: 10px 16px;
+    background: #131520;
+    border-top: 1px solid #1e2235;
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+  .card-footer code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    word-break: break-all;
   }
 </style>
 </head>
 <body>
-  <h1>PixelCraft Sprite Showcase</h1>
-  <p>Iconic, readable retro sprites created via programmatic ASCII token-grid matrices</p>
-
-  <div class="grid">
-    <div class="card">
-      <h3>1. Health Potion</h3>
-      <div class="viewport">
-        <img class="pixelated" src="potion.png" alt="Health Potion" />
+  <header>
+    <div class="brand">
+      <h1>PixelCraft Sprite Showcase</h1>
+      <span class="counter" id="item-count">30 sprites</span>
+    </div>
+    <div class="toolbar">
+      <div class="control-group">
+        <label>Search</label>
+        <input type="text" id="search-box" placeholder="Filter sprites..." oninput="filterSprites()" />
       </div>
-      <div class="desc">
-        16x16 flask with cork stopper, glass highlight rim, and crimson liquid.
+      <div class="control-group">
+        <label>Zoom</label>
+        <select id="zoom-select" onchange="setZoom(this.value)">
+          <option value="1">1x</option>
+          <option value="2">2x</option>
+          <option value="4" selected>4x</option>
+          <option value="6">6x</option>
+          <option value="8">8x</option>
+          <option value="12">12x</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Background</label>
+        <select onchange="setBackground(this.value)">
+          <option value="checkerboard" selected>Checkerboard</option>
+          <option value="dark">Deep Dark</option>
+          <option value="light">Light</option>
+          <option value="green">Chroma Green</option>
+        </select>
       </div>
     </div>
+  </header>
 
-    <div class="card">
-      <h3>2. Chibi Knight</h3>
-      <div class="viewport">
-        <img class="pixelated" src="knight.png" alt="Chibi Knight" />
+  <div class="grid" id="sprites-grid">
+      <div class="card" data-name="elemental_sword.png">
+        <div class="card-header">
+          <span class="card-title" title="elemental_sword.png">elemental_sword.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">20x20px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="elemental_sword.png" alt="elemental_sword.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>elemental_sword.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa.png">
+        <div class="card-header">
+          <span class="card-title" title="floppa.png">floppa.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">32x32px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="floppa.png" alt="floppa.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>floppa.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_classic.png">
+        <div class="card-header">
+          <span class="card-title" title="floppa_classic.png">floppa_classic.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">32x32px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_classic.png" alt="floppa_classic.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_classic.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_drag.gif">
+        <div class="card-header">
+          <span class="card-title" title="floppa_drag.gif">floppa_drag.gif</span>
+          <span class="badge" style="color: #f48c06; border-color: #f48c0644; background: #f48c0618;">32x32px &bull; ANIMATED GIF</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_drag.gif" alt="floppa_drag.gif" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_drag.gif</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_drag_sheet.png">
+        <div class="card-header">
+          <span class="card-title" title="floppa_drag_sheet.png">floppa_drag_sheet.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">128x32px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_drag_sheet.png" alt="floppa_drag_sheet.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_drag_sheet.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_drag_static.png">
+        <div class="card-header">
+          <span class="card-title" title="floppa_drag_static.png">floppa_drag_static.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">32x32px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_drag_static.png" alt="floppa_drag_static.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_drag_static.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_drag_test.png">
+        <div class="card-header">
+          <span class="card-title" title="floppa_drag_test.png">floppa_drag_test.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">32x32px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_drag_test.png" alt="floppa_drag_test.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_drag_test.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_ears_and_blink.gif">
+        <div class="card-header">
+          <span class="card-title" title="floppa_ears_and_blink.gif">floppa_ears_and_blink.gif</span>
+          <span class="badge" style="color: #f48c06; border-color: #f48c0644; background: #f48c0618;">32x32px &bull; ANIMATED GIF</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_ears_and_blink.gif" alt="floppa_ears_and_blink.gif" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_ears_and_blink.gif</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_ears_and_blink_classic.gif">
+        <div class="card-header">
+          <span class="card-title" title="floppa_ears_and_blink_classic.gif">floppa_ears_and_blink_classic.gif</span>
+          <span class="badge" style="color: #f48c06; border-color: #f48c0644; background: #f48c0618;">32x32px &bull; ANIMATED GIF</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_ears_and_blink_classic.gif" alt="floppa_ears_and_blink_classic.gif" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_ears_and_blink_classic.gif</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_ears_and_blink_classic_sheet.png">
+        <div class="card-header">
+          <span class="card-title" title="floppa_ears_and_blink_classic_sheet.png">floppa_ears_and_blink_classic_sheet.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">256x32px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_ears_and_blink_classic_sheet.png" alt="floppa_ears_and_blink_classic_sheet.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_ears_and_blink_classic_sheet.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_ears_and_blink_sheet.png">
+        <div class="card-header">
+          <span class="card-title" title="floppa_ears_and_blink_sheet.png">floppa_ears_and_blink_sheet.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">256x32px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_ears_and_blink_sheet.png" alt="floppa_ears_and_blink_sheet.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_ears_and_blink_sheet.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_ears_no_blink.gif">
+        <div class="card-header">
+          <span class="card-title" title="floppa_ears_no_blink.gif">floppa_ears_no_blink.gif</span>
+          <span class="badge" style="color: #f48c06; border-color: #f48c0644; background: #f48c0618;">32x32px &bull; ANIMATED GIF</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_ears_no_blink.gif" alt="floppa_ears_no_blink.gif" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_ears_no_blink.gif</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_ears_no_blink_classic.gif">
+        <div class="card-header">
+          <span class="card-title" title="floppa_ears_no_blink_classic.gif">floppa_ears_no_blink_classic.gif</span>
+          <span class="badge" style="color: #f48c06; border-color: #f48c0644; background: #f48c0618;">32x32px &bull; ANIMATED GIF</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_ears_no_blink_classic.gif" alt="floppa_ears_no_blink_classic.gif" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_ears_no_blink_classic.gif</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_ears_no_blink_classic_sheet.png">
+        <div class="card-header">
+          <span class="card-title" title="floppa_ears_no_blink_classic_sheet.png">floppa_ears_no_blink_classic_sheet.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">224x32px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_ears_no_blink_classic_sheet.png" alt="floppa_ears_no_blink_classic_sheet.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_ears_no_blink_classic_sheet.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_ears_no_blink_sheet.png">
+        <div class="card-header">
+          <span class="card-title" title="floppa_ears_no_blink_sheet.png">floppa_ears_no_blink_sheet.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">224x32px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_ears_no_blink_sheet.png" alt="floppa_ears_no_blink_sheet.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_ears_no_blink_sheet.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_fall.gif">
+        <div class="card-header">
+          <span class="card-title" title="floppa_fall.gif">floppa_fall.gif</span>
+          <span class="badge" style="color: #f48c06; border-color: #f48c0644; background: #f48c0618;">32x32px &bull; ANIMATED GIF</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_fall.gif" alt="floppa_fall.gif" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_fall.gif</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_fall_sheet.png">
+        <div class="card-header">
+          <span class="card-title" title="floppa_fall_sheet.png">floppa_fall_sheet.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">128x32px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_fall_sheet.png" alt="floppa_fall_sheet.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_fall_sheet.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_open.png">
+        <div class="card-header">
+          <span class="card-title" title="floppa_open.png">floppa_open.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">32x32px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="Floppa/floppa_open.png" alt="floppa_open.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>Floppa/floppa_open.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_24x24.png">
+        <div class="card-header">
+          <span class="card-title" title="floppa_24x24.png">floppa_24x24.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">24x24px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="floppa_24x24.png" alt="floppa_24x24.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>floppa_24x24.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_animated.gif">
+        <div class="card-header">
+          <span class="card-title" title="floppa_animated.gif">floppa_animated.gif</span>
+          <span class="badge" style="color: #f48c06; border-color: #f48c0644; background: #f48c0618;">24x24px &bull; ANIMATED GIF</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="floppa_animated.gif" alt="floppa_animated.gif" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>floppa_animated.gif</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_blink_24x24.png">
+        <div class="card-header">
+          <span class="card-title" title="floppa_blink_24x24.png">floppa_blink_24x24.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">24x24px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="floppa_blink_24x24.png" alt="floppa_blink_24x24.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>floppa_blink_24x24.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_classic.png">
+        <div class="card-header">
+          <span class="card-title" title="floppa_classic.png">floppa_classic.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">32x32px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="floppa_classic.png" alt="floppa_classic.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>floppa_classic.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="floppa_open.png">
+        <div class="card-header">
+          <span class="card-title" title="floppa_open.png">floppa_open.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">32x32px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="floppa_open.png" alt="floppa_open.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>floppa_open.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="king_knight.png">
+        <div class="card-header">
+          <span class="card-title" title="king_knight.png">king_knight.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">16x16px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="king_knight.png" alt="king_knight.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>king_knight.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="knight.png">
+        <div class="card-header">
+          <span class="card-title" title="knight.png">knight.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">16x16px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="knight.png" alt="knight.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>knight.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="mana_potion.png">
+        <div class="card-header">
+          <span class="card-title" title="mana_potion.png">mana_potion.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">16x16px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="mana_potion.png" alt="mana_potion.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>mana_potion.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="potion.png">
+        <div class="card-header">
+          <span class="card-title" title="potion.png">potion.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">16x16px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="potion.png" alt="potion.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>potion.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="slime_idle.gif">
+        <div class="card-header">
+          <span class="card-title" title="slime_idle.gif">slime_idle.gif</span>
+          <span class="badge" style="color: #f48c06; border-color: #f48c0644; background: #f48c0618;">16x16px &bull; ANIMATED GIF</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="slime_idle.gif" alt="slime_idle.gif" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>slime_idle.gif</code>
+        </div>
+      </div>\n      <div class="card" data-name="slime_sheet.png">
+        <div class="card-header">
+          <span class="card-title" title="slime_sheet.png">slime_sheet.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">64x16px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="slime_sheet.png" alt="slime_sheet.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>slime_sheet.png</code>
+        </div>
+      </div>\n      <div class="card" data-name="void_boss_32x32.png">
+        <div class="card-header">
+          <span class="card-title" title="void_boss_32x32.png">void_boss_32x32.png</span>
+          <span class="badge" style="color: #4895ef; border-color: #4895ef44; background: #4895ef18;">32x32px &bull; PNG SPRITE</span>
+        </div>
+        <div class="viewport checkerboard">
+          <img class="sprite-img" src="void_boss_32x32.png" alt="void_boss_32x32.png" loading="lazy" />
+        </div>
+        <div class="card-footer">
+          <code>void_boss_32x32.png</code>
+        </div>
       </div>
-      <div class="desc">
-        16x16 steel helmet with glowing visor, red plume, gold shield, sword, and boots.
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>3. Animated Slime</h3>
-      <div class="viewport">
-        <img class="pixelated" src="slime_idle.gif" alt="Animated Slime" />
-      </div>
-      <div class="desc">
-        16x16 teardrop dome with jelly shine, cute eyes, blush, and 4-frame squish & blink loop.
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>4. Straight Broadsword</h3>
-      <div class="viewport">
-        <img class="pixelated" src="elemental_sword.png" alt="Broadsword" />
-      </div>
-      <div class="desc">
-        20x20 perfectly vertical razor blade, golden winged crossguard, ruby, and grip.
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>5. Mana Potion (Edited)</h3>
-      <div class="viewport">
-        <img class="pixelated" src="mana_potion.png" alt="Mana Potion" />
-      </div>
-      <div class="desc">
-        Loaded from Health Potion PNG and transformed via <code>palette_swap()</code>.
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>6. King Knight (Edited)</h3>
-      <div class="viewport">
-        <img class="pixelated" src="king_knight.png" alt="King Knight" />
-      </div>
-      <div class="desc">
-        Loaded from Knight PNG, reskinned to gold armor + royal purple with a golden crown.
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>7. Void Boss (32x32 Procedural)</h3>
-      <div class="viewport">
-        <img class="pixelated" style="transform: scale(3.5);" src="void_boss_32x32.png" alt="Void Boss" />
-      </div>
-      <div class="desc">
-        100% procedural 32x32 sprite (ZERO ASCII lines) using 3D spherical normal shading, polygons, and ramps.
-      </div>
-    </div>
   </div>
+
+<script>
+  let currentZoom = 4;
+  function setZoom(val) {
+    currentZoom = Number(val);
+    document.querySelectorAll('.sprite-img').forEach(img => {
+      img.style.transform = `scale(${currentZoom})`;
+    });
+  }
+  function setBackground(cls) {
+    document.querySelectorAll('.viewport').forEach(vp => {
+      vp.className = `viewport ${cls}`;
+    });
+  }
+  function filterSprites() {
+    const q = document.getElementById('search-box').value.toLowerCase();
+    let visible = 0;
+    document.querySelectorAll('.card').forEach(card => {
+      const match = card.getAttribute('data-name').includes(q);
+      card.style.display = match ? 'flex' : 'none';
+      if (match) visible++;
+    });
+    document.getElementById('item-count').innerText = `${visible} sprites`;
+  }
+  window.addEventListener('DOMContentLoaded', () => {
+    setZoom(document.getElementById('zoom-select').value);
+  });
+</script>
 </body>
 </html>
