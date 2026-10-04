@@ -1,0 +1,59 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+MANIFEST
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE & Editor settings
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Testing & Cache
+.pytest_cache/
+.coverage
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Output directory: ignore generated scratch files, preserve demo assets
+output/*
+!output/potion.png
+!output/potion_preview.png
+!output/knight.png
+!output/knight_preview.png
+!output/mana_potion.png
+!output/mana_potion_preview.png
+!output/king_knight.png
+!output/king_knight_preview.png
+!output/elemental_sword.png
+!output/elemental_sword_preview.png
+!output/slime_idle.gif
+!output/slime_idle_preview.gif
+!output/slime_sheet.json
+!output/slime_sheet.png
+!output/slime_sheet_preview.png
+!output/slime_sheet_preview_view.html
+!output/void_boss_32x32.png
+!output/void_boss_32x32_preview.png
+!output/gallery.html
+!output/make_gallery.py
+!output/Floppa/
+!output/Floppa/**

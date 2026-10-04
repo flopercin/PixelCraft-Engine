@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PixelCraft Viewer - slime_sheet_preview.png</title>
+<style>
+  body {
+    margin: 0;
+    padding: 20px;
+    background: #181425;
+    color: #e0e0e0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 { font-size: 1.1rem; margin-bottom: 8px; color: #639bff; }
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    background: #262b44;
+    padding: 8px 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  button, select {
+    background: #3a4466;
+    color: #fff;
+    border: 1px solid #5a6988;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+  }
+  button:hover, select:hover { background: #4e5e8a; }
+  .viewport-container {
+    border: 2px solid #3a4466;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    transition: background 0.2s;
+  }
+  .bg-checker {
+    background-color: #202020;
+    background-image: linear-gradient(45deg, #2b2b2b 25%, transparent 25%),
+      linear-gradient(-45deg, #2b2b2b 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #2b2b2b 75%),
+      linear-gradient(-45deg, transparent 75%, #2b2b2b 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+  }
+  .bg-dark { background: #111; }
+  .bg-light { background: #f0f0f0; }
+  .bg-green { background: #00ff00; }
+  .sprite-img {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    display: block;
+  }
+  .info {
+    margin-top: 14px;
+    font-size: 0.85rem;
+    color: #8b9bb4;
+  }
+</style>
+</head>
+<body>
+  <h1>PixelCraft Interactive Viewer &mdash; slime_sheet_preview.png</h1>
+  <div class="toolbar">
+    <label>Zoom: <span id="zoom-val">8x</span></label>
+    <button onclick="setZoom(1)">1x</button>
+    <button onclick="setZoom(4)">4x</button>
+    <button onclick="setZoom(8)">8x</button>
+    <button onclick="setZoom(16)">16x</button>
+    <label style="margin-left: 12px;">Background:</label>
+    <select onchange="changeBg(this.value)">
+      <option value="bg-checker">Checkerboard</option>
+      <option value="bg-dark">Dark</option>
+      <option value="bg-light">Light</option>
+      <option value="bg-green">Green Screen</option>
+    </select>
+  </div>
+
+  <div id="viewport" class="viewport-container bg-checker">
+    <img id="sprite" class="sprite-img" src="slime_sheet_preview.png" alt="slime_sheet_preview.png" />
+  </div>
+
+  <div class="info" id="status-info">
+    Path: slime_sheet_preview.png
+  </div>
+
+<script>
+  let currentZoom = 8;
+  const img = document.getElementById('sprite');
+  const zoomVal = document.getElementById('zoom-val');
+  const viewport = document.getElementById('viewport');
+
+  img.onload = () => {
+    applyZoom();
+    document.getElementById('status-info').innerText =
+      `Image: ${img.naturalWidth}x${img.naturalHeight}px | Scaled to ${img.naturalWidth * currentZoom}x${img.naturalHeight * currentZoom}px`;
+  };
+
+  function setZoom(z) {
+    currentZoom = z;
+    zoomVal.innerText = z + 'x';
+    applyZoom();
+  }
+
+  function applyZoom() {
+    if (img.naturalWidth) {
+      img.style.width = (img.naturalWidth * currentZoom) + 'px';
+      img.style.height = (img.naturalHeight * currentZoom) + 'px';
+    }
+  }
+
+  function changeBg(bgClass) {
+    viewport.className = 'viewport-container ' + bgClass;
+  }
+</script>
+</body>
+</html>
